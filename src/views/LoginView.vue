@@ -12,7 +12,6 @@
           <div class="header-title">GinAdmin后台管理系统</div>
         </div>
       </template>
-      
       <el-form ref="formRef" :model="form" :rules="rules">
           <el-form-item prop="username">
             <el-input v-model="form.username" placeholder="用户名"></el-input>
