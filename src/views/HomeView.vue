@@ -58,35 +58,35 @@
   color: #fff;
 }
 
-.layout-container-demo /deep/ .el-sub-menu .el-menu-item-group__title{
+.layout-container-demo :deep(.el-sub-menu .el-menu-item-group__title){
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
 
-.layout-container-demo .el-sub-menu:hover{
+.layout-container-demo :deep(.el-sub-menu):hover{
   position: relative;
   background-color: #61acf8;
   color: #fff;
 }
 
-.layout-container-demo /deep/ .el-sub-menu .el-menu{
+.layout-container-demo .el-sub-menu :deep(.el-menu){
   position: relative;
   background-color: #61acf8;
 }
 
-.layout-container-demo /deep/ .el-sub-menu .el-menu .el-menu-item{
+.layout-container-demo .el-sub-menu :deep(.el-menu .el-menu-item){
   color: #fff;
 }
 
-.layout-container-demo /deep/ .el-sub-menu .el-menu .el-menu-item:hover{
+.layout-container-demo .el-sub-menu :deep(.el-menu .el-menu-item):hover{
   background-color:  #8cc5ff;
 }
 
-.layout-container-demo /deep/ .el-sub-menu__title:hover{
+.layout-container-demo :deep(.el-sub-menu__title):hover{
   background-color: #61acf8;
 }
 
-.layout-container-demo /deep/ .el-sub-menu__title{
+.layout-container-demo :deep(.el-sub-menu__title){
   color: #fff;
   font-size: 17px;
 }
