@@ -21,76 +21,14 @@
       </div>
     </el-header>
     <el-container>
-      <el-aside :width="asideWidth">
-        <div class="collapse" @click="switchTag">{{ collapseButton }}</div>
-        <!-- <el-scrollbar max-height="200px" always="false"> -->
-        <el-menu
-          background-color="#409eff"
-          text-color="#fff"
-          active-text-color="#C0C4CC"
-          :unique-opened="true"
-          :collapse="isCollapse"
-        >
-          <el-sub-menu index="1">
-            <template #title>
-              <div class="menu-icon">管</div>
-              <span>管理员管理</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item
-                @click="menuItemClick('角色管理', $event)"
-                index="/admin/group"
-                >角色管理</el-menu-item
-              >
-              <el-menu-item @click="menuItemClick('用户管理', $event)" index="/admin/user"
-                >用户管理</el-menu-item
-              >
-            </el-menu-item-group>
-          </el-sub-menu>
-          <el-sub-menu index="2">
-            <template #title>
-              <div class="menu-icon">文</div>
-              <span>文章管理</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="2-1">文章列表</el-menu-item>
-            </el-menu-item-group>
-          </el-sub-menu>
-        </el-menu>
-        <!-- </el-scrollbar> -->
-      </el-aside>
-      <el-main>
-        <el-tabs
-          v-model="activeTab"
-          closable
-          type="card"
-          @tab-click="handleClick"
-          @tab-remove="removeTag"
-        >
-          <el-tab-pane
-            v-for="item in tabs"
-            :key="item"
-            :label="item.label"
-            :name="item.name"
-          >
-            <router-view></router-view>
-          </el-tab-pane>
-        </el-tabs>
-      </el-main>
+      <AsideComp @menuItemClick="menuItemClick" :menuData="menus"></AsideComp>
+      <MainComp @removeTag="removeTag" :tagData="tabs" :activeTab="activeTab"></MainComp>
     </el-container>
   </el-container>
 </template>
 
 <style scoped>
-.collapse {
-  text-align: center;
-  color: #c0c4cc;
-  background-color: #66b1ff;
-}
 
-:deep(.el-menu--collapse) {
-  width: 80px;
-}
 
 .layout-container-demo .el-header {
   position: relative;
@@ -98,32 +36,6 @@
   color: var(--el-text-color-primary);
 }
 
-.layout-container-demo :deep(.el-sub-menu .el-menu-item-group__title) {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-.menu-icon {
-  color: #8cc5ff;
-  width: 26px !important;
-  background-color: #fff;
-  text-align: center;
-  border-radius: 50%;
-  height: 26px !important;
-  line-height: 26px !important;
-  margin-right: 10px;
-  font-size: 15px !important;
-}
-
-.layout-container-demo .el-aside {
-  color: var(--el-text-color-primary);
-  background: #409eff !important;
-  border-right: solid 1px #e6e6e6;
-  box-sizing: border-box;
-}
-.layout-container-demo .el-menu {
-  border-right: none;
-}
 .layout-container-demo .el-main {
   padding: 0;
 }
@@ -154,38 +66,39 @@
 </style>
 
 <script>
-import { computed, reactive, ref, toRefs } from "vue";
+import AsideComp from "@/components/AsideComp.vue";
+import MainComp from "@/components/MainComp.vue";
+import { reactive, ref, toRefs } from "vue";
 import { useRouter } from "vue-router";
 export default {
   name: "HomeView",
+  components:{
+    AsideComp,
+    MainComp
+  },
   setup() {
     const isCollapse = ref(false);
 
-    const switchTag = () => {
-      isCollapse.value = !isCollapse.value;
-    };
-
-    const asideWidth = computed(() => {
-      if (isCollapse.value) {
-        return "88px";
-      } else {
-        return "200px";
-      }
-    });
-
     const objs = reactive({
       tabs: [],
+      menus:[
+        {
+          title:"管理员管理",
+          children:[
+            {
+              name:"/admin/group",
+              label:"角色管理"
+            },
+            {
+              name:"/admin/user",
+              label:"用户管理"
+            },
+          ]
+        }
+      ]
     });
 
-    const collapseButton = computed(() => {
-      if (isCollapse.value) {
-        return ">>";
-      } else {
-        return "<<";
-      }
-    });
-
-    const activeTab = ref("/admin/group");
+    const activeTab = ref("");
 
     const router = useRouter();
     const handleClick = (tab) => {
@@ -212,11 +125,11 @@ export default {
       objs.tabs = newTag;
     };
 
-    const menuItemClick = (menuname, item) => {
+    const menuItemClick = (menuname, menuindex) => {
       let exit = false;
       //先判断存不存在菜单
       objs.tabs.forEach(function (one) {
-        if (one.name == item.index) {
+        if (one.name == menuindex) {
           //定位到指定值
           exit = true;
         }
@@ -224,19 +137,16 @@ export default {
 
       if (!exit) {
         objs.tabs.push({
-          name: item.index,
+          name: menuindex,
           label: menuname,
         });
       }
-      activeTab.value = item.index;
-      router.push(item.index);
+      activeTab.value = menuindex;
+      router.push(menuindex);
     };
 
     return {
       isCollapse,
-      switchTag,
-      asideWidth,
-      collapseButton,
       handleClick,
       menuItemClick,
       activeTab,

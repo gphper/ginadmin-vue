@@ -28,6 +28,7 @@
 </style>
 
 <script>
+
 export default {
   name: "GroupView",
   setup() {
